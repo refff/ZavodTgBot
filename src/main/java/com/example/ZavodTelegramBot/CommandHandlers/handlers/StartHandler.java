@@ -1,20 +1,22 @@
-package com.example.ZavodTelegramBot;
+package com.example.ZavodTelegramBot.CommandHandlers.handlers;
 
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class StartCommandHandler implements HandleCommand{
+@Component
+public class StartHandler implements HandleCommand {
 
+    @Override
     public String handle(Update update) {
         var message = update.getMessage();
         var user = message.getFrom();
-        var userId = user.getId();
 
         if (user.getUserName().equals("vralmann"))
             return "Hello my nigga, glad to see ya";
         else if (user.getUserName().equalsIgnoreCase("matvey_1809"))
             return "Damn nigga why are you so big";
         else
-            return "Glad to see you " + user.getUserName();
+            return "Добро пожаловать, для получения информации о том," +
+                    " как пользоваться ботом - оправьте комманду /help";
     }
 }
