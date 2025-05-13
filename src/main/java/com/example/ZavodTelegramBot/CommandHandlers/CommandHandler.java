@@ -28,20 +28,6 @@ public class CommandHandler {
         return createText(userId, txt);
     }
 
-    /*public SendMessage handleButtons(Update update, String button) {
-        var message = update.getMessage();
-        var userId = message.getFrom().getId();
-
-        if (button.equals("Ингридиенты")) {
-            handleCommand = new IngredientsHandler();
-        } else {
-            handleCommand = new MishMashHandler();
-        }
-
-        String response = handleCommand.handle(update);
-        return sendText(userId, response);
-    }*/
-
     private SendMessage createText(Long who, String what) {
         return SendMessage.builder()
                 .chatId(who.toString())

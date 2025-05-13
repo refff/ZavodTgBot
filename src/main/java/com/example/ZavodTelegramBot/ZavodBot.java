@@ -70,17 +70,6 @@ public class ZavodBot implements SpringLongPollingBot, LongPollingSingleThreadUp
 
                 mishmash = false;
             }
-
-
-            /*SendMessage message = SendMessage.builder()
-                    .chatId(chat_id)
-                    .text(message_text)
-                    .build();
-            try {
-                client.execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }*/
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.ZavodTelegramBot.CommandHandlers.handlers;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class HelpHandler implements HandleCommand {
+
     @Override
     public String handle(Update update) {
         return """

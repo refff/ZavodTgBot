@@ -7,8 +7,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 @Component
 public class MishMashHandler implements HandleCommand {
 
-    private ReplyKeyboardMarkup keyboardM1;
-
     @Override
     public String handle(Update update) {
         return "Введите следующие значения: \n" +
