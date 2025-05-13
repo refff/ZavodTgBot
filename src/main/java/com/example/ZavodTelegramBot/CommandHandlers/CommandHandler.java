@@ -18,7 +18,7 @@ public class CommandHandler {
             handleCommand = new StartHandler();
         } else if (message.equals("/mishmash")) {
             handleCommand = new MishMashHandler();
-        } else if (message.equals("/ingridients")) {
+        } else if (message.equals("/ingredients")) {
             handleCommand = new IngredientsHandler();
         } else if (message.equals("/help")) {
             handleCommand = new HelpHandler();

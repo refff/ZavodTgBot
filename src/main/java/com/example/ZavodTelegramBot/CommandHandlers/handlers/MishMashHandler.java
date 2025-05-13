@@ -11,7 +11,7 @@ public class MishMashHandler implements HandleCommand {
 
     @Override
     public String handle(Update update) {
-        return "Введите слкдующие значения: \n" +
+        return "Введите следующие значения: \n" +
                 "- массу пустых крышек;\n" +
                 "- массу наполненных крышек;\n" +
                 "- массу крышек после термической обработки;\n"

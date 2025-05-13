@@ -10,6 +10,7 @@ import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
@@ -44,36 +45,33 @@ public class ZavodBot implements SpringLongPollingBot, LongPollingSingleThreadUp
     public void consume(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
 
-            try {
-                String message = update.getMessage().getText();
+            String message = update.getMessage().getText();
 
-                if (update.getMessage().isCommand()) {
+            if (update.getMessage().isCommand()) {
 
-                    if (message.equals("/mishmash"))
-                        mishmash = true;
-                    else if (message.equals("/ingredients"))
-                        ingredients = true;
+                if (message.equals("/mishmash"))
+                    mishmash = true;
+                else if (message.equals("/ingredients"))
+                    ingredients = true;
 
-                    client.execute(commandHandler.handleCommand(update));
-                    return;
+                sendMessage(commandHandler.handleCommand(update));
+                return;
 
-                }
-
-                if (ingredients) {
-                    calculator = new IngredientCalc();
-                    client.execute(calculator.calculate(update));
-
-                    ingredients = false;
-                } else if (mishmash) {
-                    calculator = new MishmashCalc();
-                    client.execute(calculator.calculate(update));
-
-                    mishmash = false;
-                }
-
-            } catch (TelegramApiException e) {
-                throw new RuntimeException(e);
             }
+
+            if (ingredients) {
+                calculator = new IngredientCalc();
+                sendMessage(calculator.calculate(update));
+
+                ingredients = false;
+            } else if (mishmash) {
+                calculator = new MishmashCalc();
+                sendMessage(calculator.calculate(update));
+
+                mishmash = false;
+            }
+
+
             /*SendMessage message = SendMessage.builder()
                     .chatId(chat_id)
                     .text(message_text)
@@ -84,5 +82,14 @@ public class ZavodBot implements SpringLongPollingBot, LongPollingSingleThreadUp
                 e.printStackTrace();
             }*/
         }
+    }
+
+    private void sendMessage(SendMessage msg) {
+        try {
+            client.execute(msg);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
