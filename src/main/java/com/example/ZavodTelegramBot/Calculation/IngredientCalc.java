@@ -1,15 +1,21 @@
 package com.example.ZavodTelegramBot.Calculation;
 
+import com.example.ZavodTelegramBot.kafka.KafkaProducer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-@Component
 public class IngredientCalc implements Calculator {
+
+    @Autowired
+    private KafkaProducer kafkaProducer;
 
     @Override
     public SendMessage calculate(Update update) {
         double mass = Double.parseDouble(update.getMessage().getText().toString());
+
+        kafkaProducer.sendMessage(update.getMessage().getText());
 
         double paraffin = (mass * 11.6) / 87.5;
         double wax = (mass * 0.5) / 87.5;

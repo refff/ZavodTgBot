@@ -4,6 +4,7 @@ import com.example.ZavodTelegramBot.Calculation.Calculator;
 import com.example.ZavodTelegramBot.Calculation.IngredientCalc;
 import com.example.ZavodTelegramBot.Calculation.MishmashCalc;
 import com.example.ZavodTelegramBot.CommandHandlers.CommandHandler;
+import com.example.ZavodTelegramBot.infrastructure.BotProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
@@ -25,6 +26,8 @@ public class ZavodBot implements SpringLongPollingBot, LongPollingSingleThreadUp
 
     @Autowired
     private CommandHandler commandHandler;
+    /*@Autowired
+    private BotProperties properties;*/
     private Calculator calculator;
 
     public ZavodBot() {
