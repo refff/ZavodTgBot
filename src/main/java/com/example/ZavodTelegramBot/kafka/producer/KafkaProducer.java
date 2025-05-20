@@ -1,10 +1,10 @@
-package com.example.ZavodTelegramBot.kafka;
+package com.example.ZavodTelegramBot.kafka.producer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class KafkaProducer {
 
     KafkaTemplate<String, String> kafkaTemplate;
@@ -14,7 +14,7 @@ public class KafkaProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendMessage(String message) {
-        kafkaTemplate.send("test", message);
+    public void sendMessage(String topic, String key, String message) {
+        kafkaTemplate.send(topic, key, message);
     }
 }

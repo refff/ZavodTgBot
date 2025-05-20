@@ -1,11 +1,10 @@
-package com.example.ZavodTelegramBot;
+package com.example.ZavodTelegramBot.bot;
 
 import com.example.ZavodTelegramBot.Calculation.Calculator;
-import com.example.ZavodTelegramBot.Calculation.IngredientCalc;
-import com.example.ZavodTelegramBot.Calculation.MishmashCalc;
 import com.example.ZavodTelegramBot.CommandHandlers.CommandHandler;
 import com.example.ZavodTelegramBot.infrastructure.BotProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
@@ -20,23 +19,26 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 public class ZavodBot implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
 
     private final TelegramClient client;
+    private CommandHandler commandHandler;
+    private BotProperties properties;
+    private Calculator calculator;
 
     private boolean ingredients = false;
     private boolean mishmash = false;
 
     @Autowired
-    private CommandHandler commandHandler;
-    /*@Autowired
-    private BotProperties properties;*/
-    private Calculator calculator;
-
-    public ZavodBot() {
+    public ZavodBot(CommandHandler commandHandler,
+                    @Qualifier("botProperties") BotProperties properties,
+                    Calculator calculator) {
+        this.commandHandler = commandHandler;
+        this.properties = properties;
         this.client = new OkHttpTelegramClient(getBotToken());
+        this.calculator = calculator;
     }
 
     @Override
     public String getBotToken() {
-        return "7693471844:AAH7OaGEY5Pp8LnUEn2Gb51M5t0uNGmExAs";
+        return properties.getToken();
     }
 
     @Override
@@ -59,20 +61,19 @@ public class ZavodBot implements SpringLongPollingBot, LongPollingSingleThreadUp
 
                 sendMessage(commandHandler.handleCommand(update));
                 return;
-
             }
+
+            String topic = null;
 
             if (ingredients) {
-                calculator = new IngredientCalc();
-                sendMessage(calculator.calculate(update));
-
                 ingredients = false;
+                topic = "ingredients";
             } else if (mishmash) {
-                calculator = new MishmashCalc();
-                sendMessage(calculator.calculate(update));
-
                 mishmash = false;
+                topic = "test";
             }
+
+            sendMessage(calculator.calculate(update, topic));
         }
     }
 

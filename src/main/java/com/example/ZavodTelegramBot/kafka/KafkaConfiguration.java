@@ -1,3 +1,4 @@
+/*
 package com.example.ZavodTelegramBot.kafka;
 
 import org.apache.kafka.clients.admin.NewTopic;
@@ -12,3 +13,4 @@ public class KafkaConfiguration {
         return new NewTopic("test", 1, (short) 1);
     }
 }
+*/
