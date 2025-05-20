@@ -18,7 +18,7 @@ public class CommandHandler {
             handleCommand = new StartHandler();
         } else if (message.equals("/mishmash")) {
             handleCommand = new MishMashHandler();
-        } else if (message.equals("/ingridients")) {
+        } else if (message.equals("/ingredients")) {
             handleCommand = new IngredientsHandler();
         } else if (message.equals("/help")) {
             handleCommand = new HelpHandler();
@@ -27,20 +27,6 @@ public class CommandHandler {
         String txt  = handleCommand.handle(update);
         return createText(userId, txt);
     }
-
-    /*public SendMessage handleButtons(Update update, String button) {
-        var message = update.getMessage();
-        var userId = message.getFrom().getId();
-
-        if (button.equals("Ингридиенты")) {
-            handleCommand = new IngredientsHandler();
-        } else {
-            handleCommand = new MishMashHandler();
-        }
-
-        String response = handleCommand.handle(update);
-        return sendText(userId, response);
-    }*/
 
     private SendMessage createText(Long who, String what) {
         return SendMessage.builder()
