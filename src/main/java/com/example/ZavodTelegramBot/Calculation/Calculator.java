@@ -16,15 +16,12 @@ import java.util.concurrent.ExecutionException;
 public class Calculator {
 
     private KafkaProducer producer;
-    private KafkaIngredientConsumer consumer;
     private KafkaResponseRegistry responseRegistry;
 
     @Autowired
     public Calculator(KafkaProducer producer,
-                          KafkaIngredientConsumer kafkaIngredientConsumer,
-                          KafkaResponseRegistry kafkaResponseRegistry) {
+                      KafkaResponseRegistry kafkaResponseRegistry) {
         this.producer = producer;
-        this.consumer = kafkaIngredientConsumer;
         this.responseRegistry = kafkaResponseRegistry;
     }
 
