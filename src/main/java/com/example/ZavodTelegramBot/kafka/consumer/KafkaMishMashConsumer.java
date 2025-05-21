@@ -1,10 +1,13 @@
 package com.example.ZavodTelegramBot.kafka.consumer;
 
 import com.example.ZavodTelegramBot.kafka.KafkaResponseRegistry;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
 
 @Component
 public class KafkaMishMashConsumer {
@@ -17,7 +20,7 @@ public class KafkaMishMashConsumer {
     }
 
     @KafkaListener(topics = "MishmashAns", groupId = "MishMashAnswerConsumer")
-    public void consume(ConsumerRecord<String, String> record) {
+    public void consume(ConsumerRecord<String, ObjectNode> record) {
         try {
             responseRegistry.complete(record.key(), record.value());
         } catch (Exception e) {
