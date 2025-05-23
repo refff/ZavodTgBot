@@ -1,8 +1,8 @@
 package com.example.ZavodTelegramBot.Calculation;
 
 import com.example.ZavodTelegramBot.kafka.KafkaResponseRegistry;
-import com.example.ZavodTelegramBot.kafka.consumer.KafkaIngredientConsumer;
 import com.example.ZavodTelegramBot.kafka.producer.KafkaProducer;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,15 +16,16 @@ import java.util.concurrent.ExecutionException;
 public class Calculator {
 
     private KafkaProducer producer;
-    private KafkaIngredientConsumer consumer;
     private KafkaResponseRegistry responseRegistry;
+
+    private final String  ingredientResponse = "Масса ингридиентов: \n\nПарафин - %.2f кг.\n" +
+    "Воск - %.3f кг.\nОлейновая кислота - %.1f мл.";
+    private final String  mishMashResponse = "Процент связки в каждой крышке:\s\n1 - %.2f\n2 - %.2f\n3 - %.2f\nСреднее значение - %.2f";
 
     @Autowired
     public Calculator(KafkaProducer producer,
-                          KafkaIngredientConsumer kafkaIngredientConsumer,
-                          KafkaResponseRegistry kafkaResponseRegistry) {
+                      KafkaResponseRegistry kafkaResponseRegistry) {
         this.producer = producer;
-        this.consumer = kafkaIngredientConsumer;
         this.responseRegistry = kafkaResponseRegistry;
     }
 
@@ -32,24 +33,25 @@ public class Calculator {
         String message = update.getMessage().getText();
 
         String key = UUID.randomUUID().toString();
-        CompletableFuture<String> future = register(key);
+        CompletableFuture<ObjectNode> future = register(key);
 
         producer.sendMessage(topic, key, message);
 
-        String response = getResponse(future);
+        ObjectNode json = getResponse(future);
+        String response = convertToString(json);
 
         return new SendMessage(update.getMessage().getFrom().getId().toString(), response);
     }
 
-    private CompletableFuture<String> register(String key) {
-        CompletableFuture<String> future = new CompletableFuture<>();
+    private CompletableFuture<ObjectNode> register(String key) {
+        CompletableFuture<ObjectNode> future = new CompletableFuture<>();
         responseRegistry.register(key, future);
 
         return future;
     }
 
-    private String getResponse(CompletableFuture<String> future) {
-        String response;
+    private ObjectNode getResponse(CompletableFuture<ObjectNode> future) {
+        ObjectNode response;
         try {
             response = future.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -57,5 +59,21 @@ public class Calculator {
         }
 
         return  response;
+    }
+
+    private String convertToString(ObjectNode json) {
+        String result = null;
+
+        if (json.size() == 3) {
+            result = String.format(ingredientResponse, json.get("paraffin").asDouble(),
+                    json.get("wax").asDouble(), json.get("acid").asDouble());
+        } else if (json.size() == 4) {
+            result = String.format(mishMashResponse, json.get("1").asDouble(), json.get("2").asDouble(),
+                    json.get("3").asDouble(), json.get("average").asDouble());
+        } else {
+            result = "Something went wrong, there is error in message transferring. Please, try again";
+        }
+
+        return result;
     }
 }
